@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lumina Sense AI - Depth-Aware Lighting Editor
 
-## Getting Started
+![Lumina Sense AI](https://storage.googleapis.com/rx-assets/lumina-hero.png) <!-- You can replace this with an actual screenshot -->
 
-First, run the development server:
+Lumina Sense AI is a proof-of-concept Next.js application that demonstrates real-time, AI-driven, depth-aware video compositing running entirely in the browser. Emphasizing a zero-cost server architecture, it leverages WebGPU and React-Three-Fiber to extract depth maps from video streams and dynamically occlude 3D elements (like lens flares) behind foreground objects.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+*   **Real-Time Depth Estimation**: Utilizes `@huggingface/transformers` (v3) to run the `Xenova/depth-anything-small-hf` model directly in the client.
+*   **WebGPU Accelerated**: AI inference is fully hardware-accelerated using your device's GPU, decoupled from the main UI thread via a Web Worker.
+*   **React-Three-Fiber Integration**: Synchronizes standard HTML5 `<video>` textures with asynchronous AI depth maps inside a WebGL context.
+*   **Custom Depth-Aware Shader**: A bespoke WebGL Fragment Shader intelligently blends and occludes simulated lighting (lens flares) based on the AI's understanding of the scene's 3D geometry.
+*   **Zero Server Compute**: All AI processing happens locally in the browser—no API keys, no cloud compute costs, and completely private.
+*   **Boutique Cinema UI**: A premium, dark-mode minimalist interface built with Tailwind CSS.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠 Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **Framework**: [Next.js](https://nextjs.org/) (App Router, React, TypeScript)
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+*   **AI Engine**: [Transformers.js](https://huggingface.co/docs/transformers.js/index) by Hugging Face (WebGPU enabled)
+*   **3D Rendering**: [Three.js](https://threejs.org/) & [React-Three-Fiber](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction)
+*   **Icons**: [Lucide React](https://lucide.dev/)
 
-## Learn More
+## 🏃‍♂️ Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Ensure you have Node.js (v18+) and npm installed. Note that WebGPU is required for optimal performance (currently supported in Chrome/Edge 113+ and Safari Technology Preview).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/lumina_saas.git
+    cd lumina_saas
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3.  Start the development server:
+    ```bash
+    npm run dev
+    ```
+
+4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🧠 Architecture Overview
+
+The core of the application relies on an asynchronous synchronization loop:
+
+1.  **Video Stream**: An HTML5 video element plays a sample video.
+2.  **Depth Worker**: The current video frame is captured and sent to a dedicated Web Worker running the `depth-anything` model. It computes a grayscale depth map where light pixels represent closer objects and dark pixels represent distant objects.
+3.  **R3F Canvas**: The main React thread receives the depth map, updates a `THREE.DataTexture`, and passes both the original video frame and the dynamic depth map into a custom `ShaderMaterial`.
+4.  **Shader Logic**: For every pixel, the fragment shader compares the Z-depth of a simulated lens flare against the AI's depth map, calculating a smoothstep occlusion factor to create a realistic screen-blend effect behind foreground actors.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
