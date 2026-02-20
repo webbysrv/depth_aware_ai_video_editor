@@ -1,7 +1,5 @@
 # Lumina Sense AI - Depth-Aware Lighting Editor
 
-![Lumina Sense AI](https://storage.googleapis.com/rx-assets/lumina-hero.png) <!-- You can replace this with an actual screenshot -->
-
 Lumina Sense AI is a proof-of-concept Next.js application that demonstrates real-time, AI-driven, depth-aware video compositing running entirely in the browser. Emphasizing a zero-cost server architecture, it leverages WebGPU and React-Three-Fiber to extract depth maps from video streams and dynamically occlude 3D elements (like lens flares) behind foreground objects.
 
 ## 🚀 Features
@@ -31,8 +29,8 @@ Ensure you have Node.js (v18+) and npm installed. Note that WebGPU is required f
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/lumina_saas.git
-    cd lumina_saas
+    git clone https://github.com/webbysrv/depth_aware_ai_video_editor.git
+    cd depth_aware_ai_video_editor
     ```
 
 2.  Install dependencies:
